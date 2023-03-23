@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -45,7 +46,7 @@ func GetQuizesFromFile(fileData io.Reader) (result []Quiz) {
 }
 
 func AskOneQuiz(quiz Quiz, questionWriter io.Writer, answerReader io.Reader) bool {
-	fmt.Fprintln(questionWriter, quiz.Question)
+	fmt.Fprintf(questionWriter, quiz.Question)
 
 	var answer string
 	fmt.Fscan(answerReader, &answer)
@@ -55,18 +56,9 @@ func AskOneQuiz(quiz Quiz, questionWriter io.Writer, answerReader io.Reader) boo
 	return true
 }
 
-func GetFileName() string {
-	if len(os.Args) == 1 {
-		return defaultFileName
-	}
-
-	return os.Args[1]
-}
-
 func main() {
-	fileName := GetFileName()
-
-	fileData, err := os.ReadFile(fileName)
+	csvFilename := flag.String("csv", "problems.csv", "a csv file in the format of 'question,answer'")
+	fileData, err := os.ReadFile(*csvFilename)
 	if err != nil {
 		panic(err)
 	}
