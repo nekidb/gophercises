@@ -8,9 +8,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 )
-
-const defaultFileName = "problems.csv"
 
 type Quiz struct {
 	Question string
@@ -56,8 +55,26 @@ func AskOneQuiz(quiz Quiz, questionWriter io.Writer, answerReader io.Reader) boo
 	return true
 }
 
+// Dont understand how to test this function, so will not write it
+// func WaitAndExecute(duration time.Duration, timer Timer, toExecute func()) {
+// 	toExecute()
+// }
+
+type ScoreCounter struct {
+	Score    uint
+	MaxScore uint
+}
+
+func (sc *ScoreCounter) Print() {
+	fmt.Printf("Your score: %d/%d", sc.Score, sc.MaxScore)
+}
+
 func main() {
 	csvFilename := flag.String("csv", "problems.csv", "a csv file in the format of 'question,answer'")
+	timerDuration := flag.Int("timer", 30, "timer duration in seconds")
+
+	flag.Parse()
+
 	fileData, err := os.ReadFile(*csvFilename)
 	if err != nil {
 		panic(err)
@@ -65,13 +82,21 @@ func main() {
 
 	quizes := GetQuizesFromFile(bytes.NewReader(fileData))
 
-	counter := 0
+	scoreCounter := ScoreCounter{Score: 0, MaxScore: uint(len(quizes))}
+
+	timer := time.NewTimer(time.Duration(*timerDuration) * time.Second)
+	go func() {
+		<-timer.C
+		scoreCounter.Print()
+		os.Exit(1)
+	}()
+
 	for _, quiz := range quizes {
 		result := AskOneQuiz(quiz, os.Stdout, os.Stdin)
 		if result {
-			counter++
+			scoreCounter.Score++
 		}
 	}
 
-	fmt.Printf("\nYour score: %d/%d", counter, len(quizes))
+	scoreCounter.Print()
 }

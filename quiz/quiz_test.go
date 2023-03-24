@@ -80,6 +80,33 @@ func TestAskOneQuiz(t *testing.T) {
 	}
 }
 
+// Dont understand how to actually test this function
+// func TestWaitAndExecute(t *testing.T) {
+// 	t.Run("run function when timer expired", func(t *testing.T) {
+// 		isExecuted := false
+// 		var toExecute = func() {
+// 			isExecuted = true
+// 		}
+//
+// 		WaitAndExecute(1*time.Second, time.Timer{}, toExecute)
+//
+// 		if isExecuted != true {
+// 			t.Errorf("want %v, got %v", true, isExecuted)
+// 		}
+// 	})
+//
+// 	t.Run("testing waiting", func(t *testing.T) {
+// 		durationToWait := 30 * time.Second
+// 		spyTimer := &SpyTimer{}
+//
+// 		WaitAndExecute(durationToWait, spyTimer, func() {})
+//
+// 		if spyTimer.DurationWaited != durationToWait {
+// 			t.Errorf("should have wait for %v, but waited for %v", durationToWaint, spyTimer.DurationWaited)
+// 		}
+// 	})
+// }
+
 func assertParsedQuizes(t *testing.T, got, want []Quiz) {
 	t.Helper()
 
@@ -87,3 +114,11 @@ func assertParsedQuizes(t *testing.T, got, want []Quiz) {
 		t.Errorf("wanted %v, but got %v", want, got)
 	}
 }
+
+// type SpyTimer struct {
+// 	DurationWaited time.Duration
+// }
+//
+// func (s *SpyTimer) NewTimer(duration time.Duration) {
+// 	s.DurationWaited = duration
+// }
