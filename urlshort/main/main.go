@@ -26,18 +26,18 @@ func main() {
 	// 	// Build the YAMLHandler using the mapHandler as the
 	// 	// fallback
 
-	yaml, err := getFileData(*fileName)
+	jsonData := `[{"path":"/json-godoc","url":"https://pkg.go.dev/encoding/json"}]`
+	jsonHandler, err := urlshort.JSONHandler([]byte(jsonData), mapHandler)
 	if err != nil {
 		panic(err)
 	}
 
-	// 	yaml := `
-	// - path: /urlshort
-	//   url: https://github.com/gophercises/urlshort
-	// - path: /urlshort-final
-	//   url: https://github.com/gophercises/urlshort/tree/solution
-	// `
-	yamlHandler, err := urlshort.YAMLHandler([]byte(yaml), mapHandler)
+	yamlData, err := getFileData(*fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	yamlHandler, err := urlshort.YAMLHandler([]byte(yamlData), jsonHandler)
 	if err != nil {
 		panic(err)
 	}
