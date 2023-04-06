@@ -1,6 +1,7 @@
 package stories_test
 
 import (
+	"reflect"
 	"testing"
 	"testing/fstest"
 
@@ -8,22 +9,26 @@ import (
 )
 
 func TestGetStoriesFromFile(t *testing.T) {
-	json := `{"story1":{},"story2":{}}`
+	jsonData := `
+{
+	"intro":{"title": "The Little Blue Gopher"},
+	"new-york":{"title": "Visiting New York"}
+}`
 
 	fileName := "stories.json"
 	fs := fstest.MapFS{
-		fileName: {Data: []byte(json)},
+		fileName: {Data: []byte(jsonData)},
 	}
 
-	stories, err := stories.GetStoriesFromFile(fs, fileName)
+	storiesList, err := stories.GetStoriesFromFile(fs, fileName)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	got := len(stories)
-	want := 2
+	got := storiesList["intro"]
+	want := stories.Story{Title: "The Little Blue Gopher"}
 
-	if got != want {
-		t.Errorf("wanted %d stories, but got %d", want, got)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %+v, want %+v", got, want)
 	}
 }

@@ -6,6 +6,7 @@ import (
 )
 
 type Story struct {
+	Title string
 }
 
 type Stories map[string]Story
