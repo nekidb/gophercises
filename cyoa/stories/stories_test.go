@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetStoriesFromFile(t *testing.T) {
-	jsonData := `
+	const jsonData = `
 {
 	"intro": {
 		"title": "The Little Blue Gopher",
@@ -39,14 +39,17 @@ func TestGetStoriesFromFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got := storiesList["intro"]
-	want := stories.Story{
+	assertStory(t, storiesList["intro"], stories.Story{
 		Title: "The Little Blue Gopher",
 		Story: []string{"This is intro", "This is end of intro"},
 		Options: []stories.Option{
 			stories.Option{"This is option's text", "new-york"},
 		},
-	}
+	})
+}
+
+func assertStory(t *testing.T, got, want stories.Story) {
+	t.Helper()
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %+v, want %+v", got, want)
