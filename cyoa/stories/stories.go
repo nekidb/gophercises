@@ -6,8 +6,14 @@ import (
 )
 
 type Story struct {
-	Title string   `json:"title"`
-	Story []string `json:"story"`
+	Title   string   `json:"title"`
+	Story   []string `json:"story"`
+	Options []Option
+}
+
+type Option struct {
+	Text string `json:"text"`
+	Arc  string `json:"arc"`
 }
 
 type Stories map[string]Story

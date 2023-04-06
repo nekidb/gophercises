@@ -16,6 +16,12 @@ func TestGetStoriesFromFile(t *testing.T) {
 		"story": [
 			"This is intro",
 			"This is end of intro"
+		],
+		"options": [
+			{
+				"text": "This is option's text",
+				"arc": "new-york"
+			}
 		]
 	},
 	"new-york": {
@@ -37,6 +43,9 @@ func TestGetStoriesFromFile(t *testing.T) {
 	want := stories.Story{
 		Title: "The Little Blue Gopher",
 		Story: []string{"This is intro", "This is end of intro"},
+		Options: []stories.Option{
+			stories.Option{"This is option's text", "new-york"},
+		},
 	}
 
 	if !reflect.DeepEqual(got, want) {
