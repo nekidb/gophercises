@@ -11,8 +11,16 @@ import (
 func TestGetStoriesFromFile(t *testing.T) {
 	jsonData := `
 {
-	"intro":{"title": "The Little Blue Gopher"},
-	"new-york":{"title": "Visiting New York"}
+	"intro": {
+		"title": "The Little Blue Gopher",
+		"story": [
+			"This is intro",
+			"This is end of intro"
+		]
+	},
+	"new-york": {
+		"title": "Visiting New York"
+	}
 }`
 
 	fileName := "stories.json"
@@ -26,7 +34,10 @@ func TestGetStoriesFromFile(t *testing.T) {
 	}
 
 	got := storiesList["intro"]
-	want := stories.Story{Title: "The Little Blue Gopher"}
+	want := stories.Story{
+		Title: "The Little Blue Gopher",
+		Story: []string{"This is intro", "This is end of intro"},
+	}
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %+v, want %+v", got, want)

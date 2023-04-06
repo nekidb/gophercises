@@ -6,7 +6,8 @@ import (
 )
 
 type Story struct {
-	Title string
+	Title string   `json:"title"`
+	Story []string `json:"story"`
 }
 
 type Stories map[string]Story
