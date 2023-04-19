@@ -1,3 +1,5 @@
+<section>
+
 <h1>The Little Blue Gopher</h1>
 
 <p>Once upon a time ...</p>
@@ -7,3 +9,5 @@
 <li><a href="/new-york">That story about ...</a></li>
 <li><a href="/denver">Gee, those bandits ...</a></li>
 </ul>
+
+</section>
