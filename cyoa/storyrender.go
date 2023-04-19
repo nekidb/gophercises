@@ -12,12 +12,12 @@ var (
 )
 
 func Render(w io.Writer, chapter Chapter) error {
-	templ, err := template.ParseFS(chapterTemplates, "templates/chapter.gohtml")
+	templ, err := template.ParseFS(chapterTemplates, "templates/*.gohtml")
 	if err != nil {
 		return err
 	}
 
-	if err := templ.Execute(w, chapter); err != nil {
+	if err := templ.ExecuteTemplate(w, "chapter.gohtml", chapter); err != nil {
 		return err
 	}
 

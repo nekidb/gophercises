@@ -1,3 +1,4 @@
+{{template "top" .}}
 <section>
 <h1>{{ .Title }}</h1>
 
@@ -6,5 +7,5 @@
 <ul>{{ range .Options }}
 <li><a href="/{{ .Arc }}">{{ .Text }}</a></li>{{end}}
 </ul>
-
 </section>
+{{template "bottom" .}}
