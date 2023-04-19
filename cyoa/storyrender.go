@@ -11,13 +11,21 @@ var (
 	chapterTemplates embed.FS
 )
 
-func Render(w io.Writer, chapter Chapter) error {
+type ChapterRenderer struct {
+	templ *template.Template
+}
+
+func NewChapterRenderer() (*ChapterRenderer, error) {
 	templ, err := template.ParseFS(chapterTemplates, "templates/*.gohtml")
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if err := templ.ExecuteTemplate(w, "chapter.gohtml", chapter); err != nil {
+	return &ChapterRenderer{templ: templ}, nil
+}
+
+func (r *ChapterRenderer) Render(w io.Writer, chapter Chapter) error {
+	if err := r.templ.ExecuteTemplate(w, "chapter.gohtml", chapter); err != nil {
 		return err
 	}
 
