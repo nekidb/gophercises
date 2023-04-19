@@ -1,22 +1,18 @@
 package main
 
 import (
+	"embed"
 	"html/template"
 	"io"
 )
 
+var (
+	//go:embed "templates/*"
+	chapterTemplates embed.FS
+)
+
 func Render(w io.Writer, chapter Chapter) error {
-
-	chapterTemplate := `<h1>{{ .Title }}</h1>
-
-{{ range .Paragraphs }}<p>{{ . }}</p>
-{{end}}
-<ul>{{ range .Options }}
-<li><a href="/{{ .Arc }}">{{ .Text }}</a></li>{{end}}
-</ul>
-`
-
-	templ, err := template.New("chapter").Parse(chapterTemplate)
+	templ, err := template.ParseFS(chapterTemplates, "templates/chapter.gohtml")
 	if err != nil {
 		return err
 	}
