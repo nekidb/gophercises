@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -10,8 +11,13 @@ type StoryStore interface {
 	GetChapter(name string) (Chapter, bool)
 }
 
+type Renderer interface {
+	Render(io.Writer, Chapter) error
+}
+
 type StoryServer struct {
 	StoryStore StoryStore
+	Renderer   Renderer
 }
 
 func (s *StoryServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -24,28 +30,7 @@ func (s *StoryServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	chapterPage := makeChapterPage(chapter)
-	fmt.Fprint(w, chapterPage)
-}
-
-func makeChapterPage(chapter Chapter) string {
-	var chapterPage strings.Builder
-
-	chapterPage.WriteString(chapter.Title)
-	chapterPage.WriteString("\n\n")
-
-	for _, s := range chapter.Paragraphs {
-		chapterPage.WriteString(s)
-		chapterPage.WriteString("\n\n")
+	if err := s.Renderer.Render(w, chapter); err != nil {
+		panic(err)
 	}
-
-	chapterPage.WriteString("---\n\n")
-
-	for _, o := range chapter.Options {
-		chapterPage.WriteString(o.Text)
-		fmt.Fprintf(&chapterPage, " <%s>", o.Arc)
-		chapterPage.WriteString("\n\n")
-	}
-
-	return strings.TrimSuffix(chapterPage.String(), "\n\n")
 }

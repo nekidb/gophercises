@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -23,26 +24,20 @@ func TestStoriesServer(t *testing.T) {
 		},
 	}
 
-	storyServer := StoryServer{&storyStore}
+	renderer := StubRenderer{}
 
-	t.Run("get intro page", func(t *testing.T) {
+	storyServer := StoryServer{StoryStore: &storyStore, Renderer: &renderer}
+
+	t.Run("it call Render when chapter exists", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodGet, "/intro", nil)
 		response := httptest.NewRecorder()
 
 		storyServer.ServeHTTP(response, request)
 
 		assertStatus(t, response.Code, http.StatusOK)
-		assertResponseBody(t, response.Body.String(), `The Little Blue Gopher
-
-Once upon a time, ...
-
-One of his friends once ...
-
----
-
-That story about ... <new-york>
-
-Gee, those bandits ... <denver>`)
+		if renderer.Calls != 1 {
+			t.Errorf("did not get right render calls, got %d, want %d", renderer.Calls, 1)
+		}
 	})
 	t.Run("get not existing chapter", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodGet, "/badchapter", nil)
@@ -65,6 +60,16 @@ func (s *StubStoryStore) GetChapter(name string) (Chapter, bool) {
 		return Chapter{}, false
 	}
 	return story, true
+}
+
+type StubRenderer struct {
+	Calls int
+}
+
+func (s *StubRenderer) Render(w io.Writer, chapter Chapter) error {
+	s.Calls++
+
+	return nil
 }
 
 func assertResponseBody(t *testing.T, got, want string) {

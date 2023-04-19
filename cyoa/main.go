@@ -23,7 +23,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	renderer, err := NewChapterRenderer()
+	if err != nil {
+		panic(err)
+	}
+
 	storiesStore := InMemoryStoriesStore{storiesFromFile}
-	storiesServer := StoryServer{&storiesStore}
+
+	storiesServer := StoryServer{&storiesStore, renderer}
 	log.Fatal(http.ListenAndServe(":8080", &storiesServer))
 }
